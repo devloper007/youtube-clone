@@ -6,6 +6,7 @@ const Head = () => {
   const [menuClicked, setMenuClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   // const dispatch = useDispatch();
   // const handleMenuClick = () =>{
   //    setMenuClicked(!menuClicked);
@@ -56,15 +57,17 @@ const Head = () => {
             className="w-full border border-black rounded-l-full px-4 py-2"
             type="text"
             onChange={(e) => setSearchQuery(e.target?.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setShowSuggestions(false)}
           />
           <button className="border border-black rounded-r-full border-s-0 px-4 bg-slate-100">
             🔍
           </button>
         </div>
-        {suggestions && (
-          <div className="fixed bg-white w-1/2 border rounded-md shadow-md">
+          {showSuggestions && 
+            <div className="fixed bg-white w-1/2 border rounded-md shadow-md">
             <ul>
-              {suggestions.map((query, index) => (
+              {suggestions && suggestions.map((query, index) => (
                 <li
                   className="px-4 py-1 hover:bg-gray-100 overflow-hidden"
                   key={index}
@@ -74,7 +77,7 @@ const Head = () => {
               ))}
             </ul>
           </div>
-        )}
+          }
       </div>
       <div className="flex justify-center col-span-4">
         <svg
