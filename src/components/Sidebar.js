@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const Sidebar = () => {
   const menuToggle = useSelector(store => store.appSlice.menuToggle);
   return (
-    <div className="p-2 col-span-1 border-e mr-2">
+    <div className="p-2 col-span-2 border-e mr-2">
    {
     menuToggle ?
 <ul>
