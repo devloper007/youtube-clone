@@ -6,7 +6,8 @@ const appSlice = createSlice({
         menuToggle: false
     },
     reducers:{
-        addToggleMenu:(state, action) =>{
+        addToggleMenu:(state,action) =>{
+            console.log('togg');
             state.menuToggle = action.payload;
         }
     }

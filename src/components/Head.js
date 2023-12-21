@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from "react";
-// import { useDispatch } from 'react-redux';
-// import { addToggleMenu } from '../utils/appSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToggleMenu } from '../utils/appSlice';
+import { cacheResult } from "../utils/searchSlice";
 
 const Head = () => {
-  const [menuClicked, setMenuClicked] = useState(false);
+  // const [menuClicked, setMenuClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  // const dispatch = useDispatch();
-  // const handleMenuClick = () =>{
-  //    setMenuClicked(!menuClicked);
-  //   console.log('menu status',menuClicked);
-  // }
+  const dispatch = useDispatch();
+  const {menuToggle} = useSelector(store => store.appSlice);
+  const {cache} = useSelector(store => store.search)
+  const handleMenuClick = () =>{
+    //  setMenuClicked(!menuClicked);
+     dispatch(addToggleMenu(!menuToggle));
+    // console.log('menu status',menuClicked);
+  }
   useEffect(() => {
-    // dispatch(addToggleMenu(menuClicked));
-    getSuggestion();
+    const timer = setTimeout(()=>{
+      if(cache[searchQuery]){
+        setSuggestions(cache[searchQuery]);
+      }else{
+        getSuggestion();
+      }
+    },200);
+    return ()=>{
+      clearTimeout(timer);
+    }
   }, [searchQuery]);
 
   const getSuggestion = async () => {
@@ -24,6 +36,7 @@ const Head = () => {
     const jsonData = await data.json();
     console.log("json data", jsonData[1]);
     setSuggestions(jsonData[1]);
+    dispatch(cacheResult({[searchQuery]:jsonData[1]}));
   };
 
   return (
@@ -36,7 +49,7 @@ const Head = () => {
           strokeWidth="1.5"
           stroke="currentColor"
           className="bg-gray-200 rounded-full hover:bg-gray-300 cursor-pointer p-2 w-10 h-10"
-          onClick={() => setMenuClicked(!menuClicked)}
+          onClick={() => handleMenuClick()}
         >
           <path
             strokeLinecap="round"
@@ -51,7 +64,7 @@ const Head = () => {
         />
         <sup>©</sup>
       </div>
-      <div className="col-span-5">
+      <div className="relative col-span-5">
         <div className="flex p-4 self-center">
           <input
             className="w-full border border-black rounded-l-full px-4 py-2"
@@ -65,7 +78,7 @@ const Head = () => {
           </button>
         </div>
           {showSuggestions && 
-            <div className="fixed bg-white w-1/2 border rounded-md shadow-md">
+            <div className="absolute bg-white w-1/2 border rounded-md shadow-md">
             <ul>
               {suggestions && suggestions.map((query, index) => (
                 <li
