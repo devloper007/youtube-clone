@@ -1,8 +1,13 @@
-import React from 'react'
+import React from 'react';
+import { comments } from '../utils/constants';
+import CommentList from './CommentList';
 
 const CommentContainer = () => {
   return (
-    <div>CommentContainer</div>
+    <div>
+        <div className='font-extrabold text-lg'>Comments</div>
+        <CommentList data={comments} />
+    </div>
   )
 }
 
